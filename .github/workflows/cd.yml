@@ -44,4 +44,10 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
     
     - name: Deploy to Lambda
-      run: aws lambda update-function-code --function-name task-management-api --zip-file fileb://function.zip
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: ${{ secrets.AWS_REGION }}
+        function_name: task-management-api
+        zip_file: function.zip
