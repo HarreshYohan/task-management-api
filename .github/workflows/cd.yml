@@ -32,6 +32,7 @@ jobs:
         cp -r dist/* dist-lambda/
         cp package.json dist-lambda/
         cd dist-lambda
+        npm install --production
         npm ci --production
         zip -r ../function.zip .
       
