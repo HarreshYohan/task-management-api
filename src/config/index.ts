@@ -14,7 +14,7 @@ const SERVER = {
 
 // AWS configuration
 const AWS = {
-  REGION: process.env.AWS_REGION || 'ap-south-1',
+  REGION: process.env.APP_AWS_REGION || process.env.AWS_REGION || 'ap-south-1',
   // No defaults for credentials - must come from environment
   ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
   SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
