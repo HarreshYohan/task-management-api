@@ -36,10 +36,31 @@ const EXTERNAL_API = {
   CACHE_TTL: parseInt(process.env.API_CACHE_TTL || '300', 10),
 };
 
+const validateEnv = (): void => {
+  const requiredEnvVars = [
+    'AWS_REGION',
+    'AWS_ACCESS_KEY_ID',
+    'AWS_SECRET_ACCESS_KEY',
+    'DYNAMODB_TABLE_NAME',
+    'S3_BUCKET_NAME',
+  ];
+
+  const missingEnvVars = requiredEnvVars.filter(
+    (envVar) => !process.env[envVar]
+  );
+
+  if (missingEnvVars.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missingEnvVars.join(', ')}`
+    );
+  }
+};
+
 export default {
   SERVER,
   AWS,
   DYNAMODB,
   S3,
   EXTERNAL_API,
+  validateEnv,
 };
