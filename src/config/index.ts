@@ -1,8 +1,10 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables from .env file
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Load .env file in development, but not in production
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+}
 
 // Server configuration
 const SERVER = {
@@ -12,7 +14,8 @@ const SERVER = {
 
 // AWS configuration
 const AWS = {
-  REGION: process.env.AWS_REGION || 'us-east-1',
+  REGION: process.env.AWS_REGION || 'ap-south-1',
+  // No defaults for credentials - must come from environment
   ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
   SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
 };
@@ -30,28 +33,7 @@ const S3 = {
 // External API configuration
 const EXTERNAL_API = {
   URL: process.env.EXTERNAL_API_URL || 'https://jsonplaceholder.typicode.com',
-  CACHE_TTL: parseInt(process.env.API_CACHE_TTL || '300', 10), // 5 minutes in seconds
-};
-
-// Validate required environment variables
-const validateEnv = (): void => {
-  const requiredEnvVars = [
-    'AWS_REGION',
-    'AWS_ACCESS_KEY_ID',
-    'AWS_SECRET_ACCESS_KEY',
-    'DYNAMODB_TABLE_NAME',
-    'S3_BUCKET_NAME',
-  ];
-
-  const missingEnvVars = requiredEnvVars.filter(
-    (envVar) => !process.env[envVar]
-  );
-
-  if (missingEnvVars.length > 0) {
-    throw new Error(
-      `Missing required environment variables: ${missingEnvVars.join(', ')}`
-    );
-  }
+  CACHE_TTL: parseInt(process.env.API_CACHE_TTL || '300', 10),
 };
 
 export default {
@@ -60,5 +42,4 @@ export default {
   DYNAMODB,
   S3,
   EXTERNAL_API,
-  validateEnv,
 };
