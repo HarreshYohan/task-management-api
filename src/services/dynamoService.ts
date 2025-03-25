@@ -97,12 +97,6 @@ export const getTaskById = async (id: string): Promise<ITask | null> => {
   }
 };
 
-/**
- * Update a task in DynamoDB
- * @param id Task ID
- * @param updateData Updated task data
- * @returns The updated task
- */
 export const updateTask = async (id: string, updateData: IUpdateTaskDto): Promise<ITask | null> => {
   try {
     // First, check if the task exists
@@ -112,43 +106,21 @@ export const updateTask = async (id: string, updateData: IUpdateTaskDto): Promis
       return null;
     }
 
-    // Prepare the update expression and attribute values
-    let updateExpression = 'SET updatedAt = :updatedAt';
-    const expressionAttributeValues: Record<string, AttributeValue> = {
-      ':updatedAt': { S: new Date().toISOString() },
+    // Create a new task object with updated fields
+    const updatedTask = {
+      ...existingTask,
+      ...updateData,
+      updatedAt: new Date().toISOString()
     };
 
-    // Add each field to the update expression
-    Object.entries(updateData).forEach(([key, value]) => {
-      if (value !== undefined) {
-        updateExpression += `, ${key} = :${key}`;
-        
-        // Handle different types of values
-        if (typeof value === 'string') {
-          expressionAttributeValues[`:${key}`] = { S: value };
-        } else if (typeof value === 'number') {
-          expressionAttributeValues[`:${key}`] = { N: value.toString() };
-        } else if (typeof value === 'boolean') {
-          expressionAttributeValues[`:${key}`] = { BOOL: value };
-        }
-      }
-    });
-
+    // Put the entire updated item
     const params = {
       TableName: tableName,
-      Key: marshall({ id }),
-      UpdateExpression: updateExpression,
-      ExpressionAttributeValues: expressionAttributeValues,
-      ReturnValues: 'ALL_NEW' as const, // Use type assertion to match AWS SDK's ReturnValue type
+      Item: marshall(updatedTask)
     };
 
-    const { Attributes } = await dynamoClient.send(new UpdateItemCommand(params));
-    
-    if (!Attributes) {
-      throw new ApiError(500, 'Failed to update task in database');
-    }
-
-    return unmarshall(Attributes) as ITask;
+    await dynamoClient.send(new PutItemCommand(params));
+    return updatedTask;
   } catch (error) {
     console.error(`Error updating task with ID ${id} in DynamoDB:`, error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to update task in database');
