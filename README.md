@@ -77,14 +77,14 @@ task-management-api/
        --attribute-definitions AttributeName=id,AttributeType=S \
        --key-schema AttributeName=id,KeyType=HASH \
        --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
-       --region us-east-1
+       --region ap-south-1
    ```
 
    Create S3 bucket:
    ```bash
    aws s3api create-bucket \
        --bucket task-attachments \
-       --region us-east-1
+       --region ap-south-1
    ```
 
 5. Build and run the application:
@@ -124,7 +124,7 @@ npm run test:integration
 
 This application can be deployed using several AWS services:
 
-1. **AWS Lambda with API Gateway** (Serverless)
+1. **AWS Lambda with API Gateway** (Serverless) used here
 2. **Elastic Beanstalk**
 3. **ECS with Fargate**
 4. **EKS**

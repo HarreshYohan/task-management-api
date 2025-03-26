@@ -44,7 +44,7 @@ export const createTask = async (taskData: ICreateTaskDto): Promise<ITask> => {
     await dynamoClient.send(new PutItemCommand(params));
     return task;
   } catch (error) {
-    console.error('Error creating task in DynamoDB:', error instanceof Error ? error.message : error);
+    //console.error('Error creating task in DynamoDB:', error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to create task in database');
   }
 };
@@ -63,7 +63,7 @@ export const getTasks = async (): Promise<ITask[]> => {
     
     return Items ? Items.map(item => unmarshall(item) as ITask) : [];
   } catch (error) {
-    console.error('Error fetching tasks from DynamoDB:', error instanceof Error ? error.message : error);
+    //console.error('Error fetching tasks from DynamoDB:', error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to fetch tasks from database');
   }
 };
@@ -88,7 +88,7 @@ export const getTaskById = async (id: string): Promise<ITask | null> => {
 
     return unmarshall(Item) as ITask;
   } catch (error) {
-    console.error(`Error fetching task with ID ${id} from DynamoDB:`, error instanceof Error ? error.message : error);
+    //console.error(`Error fetching task with ID ${id} from DynamoDB:`, error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to fetch task from database');
   }
 };
@@ -118,7 +118,7 @@ export const updateTask = async (id: string, updateData: IUpdateTaskDto): Promis
     await dynamoClient.send(new PutItemCommand(params));
     return updatedTask;
   } catch (error) {
-    console.error(`Error updating task with ID ${id} in DynamoDB:`, error instanceof Error ? error.message : error);
+    //console.error(`Error updating task with ID ${id} in DynamoDB:`, error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to update task in database');
   }
 };
@@ -145,7 +145,7 @@ export const deleteTask = async (id: string): Promise<boolean> => {
     await dynamoClient.send(new DeleteItemCommand(params));
     return true;
   } catch (error) {
-    console.error(`Error deleting task with ID ${id} from DynamoDB:`, error instanceof Error ? error.message : error);
+    //console.error(`Error deleting task with ID ${id} from DynamoDB:`, error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to delete task from database');
   }
 };
@@ -178,7 +178,7 @@ export const storeCache = async (
 
     await dynamoClient.send(new PutItemCommand(params));
   } catch (error) {
-    console.error(`Error storing cache with key ${cacheKey} in DynamoDB:`, error instanceof Error ? error.message : error);
+    //console.error(`Error storing cache with key ${cacheKey} in DynamoDB:`, error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to store cache in database');
   }
 };
@@ -211,7 +211,7 @@ export const getCache = async <T>(cacheKey: string): Promise<T | null> => {
 
     return cacheEntry.data as T;
   } catch (error) {
-    console.error(`Error fetching cache with key ${cacheKey} from DynamoDB:`, error instanceof Error ? error.message : error);
+    //console.error(`Error fetching cache with key ${cacheKey} from DynamoDB:`, error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to fetch cache from database');
   }
 };

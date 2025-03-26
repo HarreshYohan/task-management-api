@@ -25,7 +25,7 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   console.error(`Error: ${err.message}`);
-  console.error(err.stack);
+  //console.error(err.stack);
 
   // Determine if this is a known API error or an unexpected error
   const statusCode = (err as ApiError).statusCode || 500;
