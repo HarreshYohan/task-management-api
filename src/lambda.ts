@@ -11,6 +11,6 @@ export const handler = async (
   context: Context
 ): Promise<APIGatewayProxyResult> => {
   console.log('Event:', JSON.stringify(event));
-  // Use type assertion to handle the return type
+  console.log('Registered routes:', app._router.stack.map((r: { route: { path: any; }; }) => r.route?.path).filter(Boolean));
   return await serverlessHandler(event, context) as Promise<APIGatewayProxyResult>;
 };
