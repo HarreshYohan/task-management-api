@@ -39,4 +39,11 @@ router.put('/:id', validate(taskUpdateSchema), taskController.updateTask);
  */
 router.delete('/:id', taskController.deleteTask);
 
+/**
+ * @route   POST /upload
+ * @desc    upload a file
+ * @access  Public
+ */
+router.post('/upload', taskController.generateFileUploadUrl);
+
 export default router;

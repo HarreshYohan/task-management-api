@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { externalApiService } from '../services';
-import { ApiError } from '../middlewares/errorHandlers';
+import { ApiError } from '../middlewares/errorHandler';
 
 /**
  * Get all users from external API

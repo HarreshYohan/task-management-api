@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import config from '../config';
 import { IUser } from '../models/taskModel';
-import { ApiError } from '../middlewares/errorHandlers';
+import { ApiError } from '../middlewares/errorHandler';
 import { storeCache, getCache } from './dynamoService';
 
 const API_URL = config.EXTERNAL_API.URL;

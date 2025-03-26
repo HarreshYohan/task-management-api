@@ -1,4 +1,4 @@
-import { errorHandler, notFoundHandler, ApiError } from './errorHandlers';
+import { errorHandler, notFoundHandler, ApiError } from './errorHandler';
 import { validate, taskSchema, taskUpdateSchema } from './requestValidator';
 
 export {

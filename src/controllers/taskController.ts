@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { dynamoService, s3Service } from '../services';
-import { ApiError } from '../middlewares/errorHandlers';
+import { ApiError } from '../middlewares/errorHandler';
 import { ICreateTaskDto, IUpdateTaskDto } from '../models/taskModel';
+
 
 /**
  * Create a new task
@@ -19,8 +20,7 @@ export const createTask = async (
     let fileUploadInfo;
     if (req.body.requestFileUpload && req.body.fileType) {
       fileUploadInfo = await s3Service.generateUploadUrl(req.body.fileType);
-      
-      // Store the file URL in the task data
+
       taskData.fileUrl = s3Service.getPublicFileUrl(fileUploadInfo.fileKey);
     }
     
@@ -173,6 +173,37 @@ export const deleteTask = async (
       success: true,
       data: {},
       message: `Task with ID ${id} deleted successfully`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Generate a pre-signed URL for file upload
+ * @route POST /tasks/upload
+ */
+export const generateFileUploadUrl = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { fileType } = req.body;
+    
+    if (!fileType) {
+      throw new ApiError(400, 'File type is required');
+    }
+    
+    const { uploadUrl, fileKey } = await s3Service.generateUploadUrl(fileType);
+    
+    res.status(200).json({
+      success: true,
+      data: {
+        uploadUrl,
+        fileKey,
+        fileUrl: s3Service.getPublicFileUrl(fileKey)
+      }
     });
   } catch (error) {
     next(error);

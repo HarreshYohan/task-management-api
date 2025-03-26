@@ -11,7 +11,7 @@ import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../config';
 import { ITask, ICreateTaskDto, IUpdateTaskDto, IUserCacheEntry, TaskStatus } from '../models/taskModel';
-import { ApiError } from '../middlewares/errorHandlers';
+import { ApiError } from '../middlewares/errorHandler';
 
 // Initialize DynamoDB client
 const dynamoClient = new DynamoDBClient({

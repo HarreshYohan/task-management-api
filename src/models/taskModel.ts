@@ -19,7 +19,6 @@ export interface ITask {
   createdAt: string;
   updatedAt: string;
 }
-
 /**
  * Task creation DTO - data required to create a new task
  */
