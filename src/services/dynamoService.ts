@@ -16,10 +16,6 @@ import { ApiError } from '../middlewares/errorHandlers';
 // Initialize DynamoDB client
 const dynamoClient = new DynamoDBClient({
   region: config.AWS.REGION,
-  credentials: {
-    accessKeyId: config.AWS.ACCESS_KEY_ID!,
-    secretAccessKey: config.AWS.SECRET_ACCESS_KEY!,
-  }
 });
 
 const tableName = config.DYNAMODB.TABLE_NAME;
