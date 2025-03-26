@@ -5,6 +5,13 @@ import { validate, taskSchema, taskUpdateSchema } from '../middlewares';
 const router = Router();
 
 /**
+ * @route   POST /tasks/upload
+ * @desc    Generate a pre-signed URL for file upload
+ * @access  Public
+ */
+router.post('/upload', taskController.generateFileUploadUrl);
+
+/**
  * @route   POST /tasks
  * @desc    Create a new task
  * @access  Public
@@ -38,12 +45,5 @@ router.put('/:id', validate(taskUpdateSchema), taskController.updateTask);
  * @access  Public
  */
 router.delete('/:id', taskController.deleteTask);
-
-/**
- * @route   POST /upload
- * @desc    upload a file
- * @access  Public
- */
-router.post('/upload', taskController.generateFileUploadUrl);
 
 export default router;
