@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
     
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -19,20 +20,17 @@ jobs:
         cache: 'npm'
         
     - name: Install dependencies
-      run: |
-        npm install
-        npm ci
+      run: npm ci
       
     - name: Build
       run: npm run build
       
     - name: Package Lambda
       run: |
-        mkdir -p dist-lambda
-        cp -r dist/* dist-lambda/
-        cp package.json dist-lambda/
-        cd dist-lambda
-        npm install --production
+        mkdir -p deployment
+        cp -r dist/* deployment/
+        cp package.json deployment/
+        cd deployment
         npm ci --production
         zip -r ../function.zip .
       
@@ -41,13 +39,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ap-south-1
     
     - name: Deploy to Lambda
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: task-management-api
-        zip_file: function.zip
+      run: aws lambda update-function-code --function-name task-management-api --zip-file fileb://function.zip
