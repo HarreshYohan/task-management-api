@@ -31,7 +31,7 @@ jobs:
         cp -r dist/* deployment/
         cp package.json deployment/
         cd deployment
-        npm ci --production
+        npm install --production
         zip -r ../function.zip .
       
     - name: Configure AWS credentials
