@@ -10,6 +10,7 @@ export const handler = async (
   event: APIGatewayProxyEvent, 
   context: Context
 ): Promise<APIGatewayProxyResult> => {
+  console.log('Event:', JSON.stringify(event));
   // Use type assertion to handle the return type
   return await serverlessHandler(event, context) as Promise<APIGatewayProxyResult>;
 };

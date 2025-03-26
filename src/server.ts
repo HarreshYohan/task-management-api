@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 });
 
 // API routes
-app.use('/dev', routes);
+app.use('/api', routes);
 
 // Error handling middleware
 app.use(errorHandler);
