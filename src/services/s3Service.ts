@@ -1,9 +1,9 @@
 // src/services/s3Service.ts
-import { 
-  S3Client, 
-  PutObjectCommand, 
-  DeleteObjectCommand, 
-  GetObjectCommand 
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,7 +12,7 @@ import { ApiError } from '../middlewares/errorHandler';
 
 // Initialize S3 client (no credentials needed in Lambda)
 const s3Client = new S3Client({
-  region: config.AWS.REGION
+  region: config.AWS.REGION,
 });
 
 const bucketName = config.S3.BUCKET_NAME;
@@ -22,10 +22,12 @@ const bucketName = config.S3.BUCKET_NAME;
  * @param fileType MIME type of the file
  * @returns Object containing the upload URL and the file key
  */
-export const generateUploadUrl = async (fileType: string): Promise<{ uploadUrl: string; fileKey: string }> => {
+export const generateUploadUrl = async (
+  fileType: string,
+): Promise<{ uploadUrl: string; fileKey: string }> => {
   try {
     const fileKey = `${uuidv4()}-${Date.now()}`;
-    
+
     const params = {
       Bucket: bucketName,
       Key: fileKey,
@@ -34,7 +36,7 @@ export const generateUploadUrl = async (fileType: string): Promise<{ uploadUrl: 
 
     const command = new PutObjectCommand(params);
     const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); // URL expires in 1 hour
-    
+
     return {
       uploadUrl,
       fileKey,
@@ -53,9 +55,7 @@ export const generateUploadUrl = async (fileType: string): Promise<{ uploadUrl: 
 export const deleteFile = async (fileKey: string): Promise<boolean> => {
   try {
     // Extract the file key from a URL if provided
-    const actualKey = fileKey.includes('/') 
-      ? fileKey.split('/').pop()! 
-      : fileKey;
+    const actualKey = fileKey.includes('/') ? fileKey.split('/').pop()! : fileKey;
 
     const params = {
       Bucket: bucketName,

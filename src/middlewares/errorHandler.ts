@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
  */
 export class ApiError extends Error {
   statusCode: number;
-  
+
   constructor(statusCode: number, message: string) {
     super(message);
     this.statusCode = statusCode;
@@ -22,7 +22,7 @@ export const errorHandler = (
   req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.error(`Error: ${err.message}`);
   //console.error(err.stack);
@@ -30,13 +30,13 @@ export const errorHandler = (
   // Determine if this is a known API error or an unexpected error
   const statusCode = (err as ApiError).statusCode || 500;
   const message = err.message || 'Internal Server Error';
-  
+
   // In development mode, include the stack trace
   const response: any = {
     success: false,
     message,
   };
-  
+
   if (process.env.NODE_ENV === 'development' && statusCode === 500) {
     response.stack = err.stack;
   }

@@ -1,16 +1,22 @@
-import { 
-  DynamoDBClient, 
-  PutItemCommand, 
-  GetItemCommand, 
+import {
+  DynamoDBClient,
+  PutItemCommand,
+  GetItemCommand,
   ScanCommand,
   UpdateItemCommand,
   DeleteItemCommand,
-  AttributeValue
+  AttributeValue,
 } from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../config';
-import { ITask, ICreateTaskDto, IUpdateTaskDto, IUserCacheEntry, TaskStatus } from '../models/taskModel';
+import {
+  ITask,
+  ICreateTaskDto,
+  IUpdateTaskDto,
+  IUserCacheEntry,
+  TaskStatus,
+} from '../models/taskModel';
 import { ApiError } from '../middlewares/errorHandler';
 
 // Initialize DynamoDB client
@@ -60,8 +66,8 @@ export const getTasks = async (): Promise<ITask[]> => {
     };
 
     const { Items } = await dynamoClient.send(new ScanCommand(params));
-    
-    return Items ? Items.map(item => unmarshall(item) as ITask) : [];
+
+    return Items ? Items.map((item) => unmarshall(item) as ITask) : [];
   } catch (error) {
     //console.error('Error fetching tasks from DynamoDB:', error instanceof Error ? error.message : error);
     throw new ApiError(500, 'Failed to fetch tasks from database');
@@ -81,7 +87,7 @@ export const getTaskById = async (id: string): Promise<ITask | null> => {
     };
 
     const { Item } = await dynamoClient.send(new GetItemCommand(params));
-    
+
     if (!Item) {
       return null;
     }
@@ -97,7 +103,7 @@ export const updateTask = async (id: string, updateData: IUpdateTaskDto): Promis
   try {
     // First, check if the task exists
     const existingTask = await getTaskById(id);
-    
+
     if (!existingTask) {
       return null;
     }
@@ -106,13 +112,13 @@ export const updateTask = async (id: string, updateData: IUpdateTaskDto): Promis
     const updatedTask = {
       ...existingTask,
       ...updateData,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     // Put the entire updated item
     const params = {
       TableName: tableName,
-      Item: marshall(updatedTask)
+      Item: marshall(updatedTask),
     };
 
     await dynamoClient.send(new PutItemCommand(params));
@@ -132,7 +138,7 @@ export const deleteTask = async (id: string): Promise<boolean> => {
   try {
     // First, check if the task exists
     const existingTask = await getTaskById(id);
-    
+
     if (!existingTask) {
       return false;
     }
@@ -159,7 +165,7 @@ export const deleteTask = async (id: string): Promise<boolean> => {
 export const storeCache = async (
   cacheKey: string,
   data: any,
-  ttlInSeconds: number
+  ttlInSeconds: number,
 ): Promise<void> => {
   try {
     const now = Math.floor(Date.now() / 1000); // Current time in seconds
@@ -196,14 +202,14 @@ export const getCache = async <T>(cacheKey: string): Promise<T | null> => {
     };
 
     const { Item } = await dynamoClient.send(new GetItemCommand(params));
-    
+
     if (!Item) {
       return null;
     }
 
     const cacheEntry = unmarshall(Item) as IUserCacheEntry;
     const now = Math.floor(Date.now() / 1000);
-    
+
     // Check if cache is expired
     if (cacheEntry.expiresAt < now) {
       return null;

@@ -7,7 +7,10 @@ import { ApiError } from './errorHandler';
  * @param schema Joi schema for validation
  * @param property Request property to validate ('body', 'query', 'params')
  */
-export const validate = (schema: Joi.ObjectSchema, property: 'body' | 'query' | 'params' = 'body') => {
+export const validate = (
+  schema: Joi.ObjectSchema,
+  property: 'body' | 'query' | 'params' = 'body',
+) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const { error } = schema.validate(req[property], {
       abortEarly: false,
@@ -23,12 +26,7 @@ export const validate = (schema: Joi.ObjectSchema, property: 'body' | 'query' | 
       message: detail.message,
     }));
 
-    next(
-      new ApiError(
-        400,
-        'Validation error: ' + error.details.map(x => x.message).join(', ')
-      )
-    );
+    next(new ApiError(400, 'Validation error: ' + error.details.map((x) => x.message).join(', ')));
   };
 };
 
